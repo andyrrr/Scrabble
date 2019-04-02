@@ -1,6 +1,8 @@
 #ifndef PIEZA_H
 #define PIEZA_H
 #include "ficha.h"
+#include <string>
+using namespace std;
 
 class Pieza {
 public:
@@ -13,6 +15,7 @@ public:
     void setFree(bool);
     Ficha *getFletra() const;
     void setFletra(Ficha *);
+    string toString();
 
 private:
     int Col;

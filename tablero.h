@@ -8,6 +8,10 @@
 #include <QMouseEvent>
 #include "listaPieza.h"
 #include "listaficha.h"
+#include "iostream"
+#include "stdio.h"
+#include "string"
+
 class Dibujar;
 
 class Tablero : public QWidget
@@ -41,6 +45,7 @@ private:
     QPushButton *pasar;
     QPushButton *salir;
     ListaPieza piezas;
+    Pieza *Matriz[12][12] {};
     ListaPieza adyacentes;
     ListaPieza adyacentes2;
     ListaFicha fichas;

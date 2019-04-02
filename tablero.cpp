@@ -108,13 +108,16 @@ void Tablero::generarAdyacentes(int x){
 
 }
 void Tablero::generarPiezas(){
-    for (int i=0; i<tam;i++){
-        for (int j=0; j<tam;j++){
-            Pieza *p= new Pieza(j*50,i*50);
+    for (int fila=0; fila<tam;fila++){
+        for (int col=0; col<tam;col++){
+            Pieza *p= new Pieza(col*50,fila*50);
+            Matriz[col][fila]=p;
             piezas.agregar(p);
         }
     }
+
 }
+
 
 void Tablero::generarFichas(){
     srand(time(NULL));
@@ -138,13 +141,22 @@ void Tablero::paintEvent(QPaintEvent *event)
 {
     QPainter painter;
     painter.begin(this);
-    for (int q=0; q<piezas.tamano();q++){
+
+    for (int fila=0; fila<tam;fila++){
+        for (int col=0; col<tam;col++){
+            int x=Matriz[col][fila]->getFil();
+            int y=Matriz[col][fila]->getCol();
+            dibujar->paint(&painter,x,y,fondo);
+        }
+    }
+
+    /*for (int q=0; q<piezas.tamano();q++){
         //cout<<"el nodo"<<endl;
 
         int x=piezas.retornar(q)->getDato()->getFil();
         int y=piezas.retornar(q)->getDato()->getCol();
         dibujar->paint(&painter,x,y,fondo);
-    }
+    }*/
 
     for (int q=0; q<fichas.tamano();q++){
         //cout<<"el nodo"<<endl;

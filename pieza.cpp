@@ -1,5 +1,6 @@
 #include "pieza.h"
-
+#include <string>
+using namespace std;
     Pieza::Pieza(int fil, int col) : Col(col), Fil(fil),Free(true){
         Fletra = nullptr;
     }
@@ -36,4 +37,8 @@
     void Pieza::setFil(int fil) {
         Fil = fil;
     }
-
+    string Pieza::toString(){
+        string final;
+        final = "("+to_string(getCol())+","+to_string(getFil())+")";
+        return final;
+    }
