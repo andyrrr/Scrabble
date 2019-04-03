@@ -21,12 +21,12 @@ class Tablero : public QWidget
 public:
     Tablero(Dibujar *dibujar, QWidget *parent);
     void generarPiezas();
-    void generarAdyacentes(int);
+    void generarAdyacentes(int col, int fila);
     void generarFichas();
-    bool direccion(Pieza*,int);
+    bool direccion2(Pieza* mov);
     void mousePressEvent(QMouseEvent *event) override;
-    void asignarFicha(int pieza,int ficha);
-    bool verificarDireccion(int);
+    void asignarFicha(int piezaCol, int piezaFil, int fichaCol, int fichaFil);
+    bool verificarDireccion(int piezaCol, int piezaFila);
 protected:
     void paintEvent(QPaintEvent *event) override;
 
@@ -44,19 +44,26 @@ private:
     QPushButton *eliminar;
     QPushButton *pasar;
     QPushButton *salir;
-    ListaPieza piezas;
     Pieza *Matriz[12][12] {};
     ListaPieza adyacentes;
     ListaPieza adyacentes2;
-    ListaFicha fichas;
-    Ficha *fichaSelec;
-    Pieza *piezaSelec;
-    int ponerP=-1;
-    int ponerF=-1;
-    int piezaAct=-1;
-    int cont=-1;
+    Pieza *adyacentess[4] {};
+    Pieza *adyacentes22[4] {};
+    Ficha *listaFichas[3][4] {};
+    Ficha *fichaSelec=nullptr;
+    Pieza *piezaSelec=nullptr;
+
+    int ponerPCol=-1;
+    int ponerPFil=-1;
+    int ponerFCol=-1;
+    int ponerFFil=-1;
+
+    int piezaActCol=-1;
+    int piezaActFila=-1;
     int tam=12;
     int dire=0;
+    int contfila=10;
+    int contCol=-1;
 };
 
 #endif // TABLERO_H
