@@ -20,6 +20,7 @@ Tablero::Tablero(Dibujar *dibujar,QWidget *parent):QWidget(parent),dibujar(dibuj
     ListaPieza piezas;
     generarPiezas();
     generarFichas();
+    palabraFormada="";
 }
 
 
@@ -30,7 +31,6 @@ bool Tablero::direccion(Pieza *mov){
             cout<<"esta en adyacentes"<<endl;
             for (int fila=0;fila<tam;fila++){
                 for (int col=0; col<tam; col++){
-
                     if (Matriz[col][fila]==mov){
                         int cont=0;
                         while (Matriz[col][piezaActFila+cont]->getFree()==false && cont<tam){
@@ -274,8 +274,48 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
         piezaActCol=piezaCol;
         piezaActFila=piezaFila;
         adyacentes.limpiar();
+        int cont=0;
+        //cout<<"direccion PPP"<<dire<<endl;
         Matriz[piezaCol][piezaFila]->setFletra(listaFichas[fichaCol][fichaFila]);
         generarAdyacentes(piezaCol,piezaFila);
+        if(dire==1 || dire==0){
+            //cout<<(Matriz[piezaActCol][piezaActFila+cont]->getFree()==false)<<endl;
+            //cout<<(1==1)<<endl;
+            while (cont<tam && Matriz[piezaActCol][piezaActFila+cont]->getFree()==false){
+                palabraFormada=palabraFormada+Matriz[piezaActCol][piezaActFila+cont]->getFletra()->getLetra();
+                cont++;
+                //cout<<"letraagregada"<<endl;
+            }
+        }
+        if(dire==2 || dire==0){
+            //cout<<(Matriz[piezaActCol][piezaActFila+cont]->getFree()==false)<<endl;
+            //cout<<(1==1)<<endl;
+            while (-1<piezaActFila-cont && Matriz[piezaActCol][piezaActFila-cont]->getFree()==false){
+                palabraFormada=palabraFormada+Matriz[piezaActCol][piezaActFila-cont]->getFletra()->getLetra();
+                cont++;
+                //cout<<"letraagregada"<<endl;
+            }
+        }
+        if(dire==3 || dire==0){
+            //cout<<(Matriz[piezaActCol][piezaActFila+cont]->getFree()==false)<<endl;
+            //cout<<(1==1)<<endl;
+            while (cont<tam && Matriz[piezaActCol+cont][piezaActFila]->getFree()==false){
+                palabraFormada=palabraFormada+Matriz[piezaActCol+cont][piezaActFila]->getFletra()->getLetra();
+                cont++;
+                //cout<<"letraagregada"<<endl;
+            }
+        }
+
+        if(dire==4 || dire==0){
+            //cout<<(Matriz[piezaActCol][piezaActFila+cont]->getFree()==false)<<endl;
+            //cout<<(1==1)<<endl;
+            while (-1<piezaActCol-cont && Matriz[piezaActCol-cont][piezaActFila]->getFree()==false){
+                palabraFormada=palabraFormada+Matriz[piezaActCol-cont][piezaActFila]->getFletra()->getLetra();
+                cont++;
+                //cout<<"letraagregada"<<endl;
+            }
+        }
+
     }
     ponerFCol=-1;
     ponerFFil=-1;
@@ -306,6 +346,7 @@ void Tablero::handleEnviar()
     generarAdyacentes(contCol,contfila);
     repaint();*/
     cout<<"entra"<<endl;
+    cout<<palabraFormada<<endl;
     for (int fila=0;fila<tam;fila++){
         for (int col=0;col<tam;col++){
             int filaB=Matriz[col][fila]->getFil();
@@ -349,6 +390,8 @@ void Tablero::inicializar(){
 
     fichaSelec=nullptr;
     piezaSelec=nullptr;
+
+    palabraFormada="";
 
     repaint();
 }

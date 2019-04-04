@@ -67,6 +67,7 @@ private:
     int dire=0;
     int contfila=10;
     int contCol=-1;
+    string palabraFormada;
 };
 
 #endif // TABLERO_H
