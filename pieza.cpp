@@ -24,10 +24,12 @@ using namespace std;
     }
 
     void Pieza::setFletra(Ficha *fletra) {
-        Fletra = fletra;
-        Fletra->setCol(Col);
-        Fletra->setFil(Fil);
-        this->setFree(false);
+        Fletra=fletra;
+        if(fletra!=nullptr){
+            Fletra->setCol(Col);
+            Fletra->setFil(Fil);
+            this->setFree(false);
+        }
     }
 
     int Pieza::getFil() const {

@@ -1,6 +1,7 @@
 #ifndef PIEZA_H
 #define PIEZA_H
 #include "ficha.h"
+#include <QBrush>
 #include <string>
 using namespace std;
 
@@ -22,5 +23,6 @@ private:
     int Fil;
     Ficha *Fletra;
     bool Free;
+    QBrush borde;
 };
 #endif // PIEZA_H

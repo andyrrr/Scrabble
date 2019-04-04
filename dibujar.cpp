@@ -6,21 +6,23 @@
 
 Dibujar::Dibujar()
 {
-    contorno = QPen(Qt::black);
-    contorno.setWidth(2);
-    textFont.setPixelSize(50);
+    contornoPieza.setColor(Qt::black);
+    contornoPieza.setWidth(2);
+    textFont.setPixelSize(40);
 }
 
 void Dibujar::paint(QPainter *painter,int x, int y,QBrush relleno)
 {
-    painter->setPen(contorno);
+    painter->setPen(contornoPieza);
     painter->setBrush(relleno);
-    painter->drawRect(x,y,50,50);
+    painter->drawRect(x,y,40,40);
 }
-void Dibujar::paint2(QPainter *painter,int x, int y, char letra, QBrush relleno)
+void Dibujar::paint2(QPainter *painter,int x, int y, char letra, QPen cont)
 {
-    painter->setPen(contorno);
-    painter->setBrush(relleno);
-    painter->drawRect(x,y,50,50);
-    painter->drawText(QRect(x,y,50,50),Qt::AlignCenter,QString(letra));
+    contornoFicha = cont;
+    contornoFicha.setWidth(2);
+    painter->setPen(contornoFicha);
+    painter->setBrush(QBrush(Qt::yellow));
+    painter->drawRect(x,y,40,40);
+    painter->drawText(QRect(x,y,40,40),Qt::AlignCenter,QString(letra));
 }

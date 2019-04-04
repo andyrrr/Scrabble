@@ -8,7 +8,10 @@
 #include <iostream>
 #include <stdlib.h>
 #include <cstdlib>
+#include <string>
 #include<time.h>
+
+using namespace std;
 
 Tablero::Tablero(Dibujar *dibujar,QWidget *parent):QWidget(parent),dibujar(dibujar)
 {
@@ -20,24 +23,54 @@ Tablero::Tablero(Dibujar *dibujar,QWidget *parent):QWidget(parent),dibujar(dibuj
 }
 
 
-bool Tablero::direccion2(Pieza *mov){
+bool Tablero::direccion(Pieza *mov){
     cout<<"entra"<<endl;
     for (int p=0;p<adyacentes2.tamano();p++){
         if(adyacentes2.retornar(p)->getDato()==mov){
+            cout<<"esta en adyacentes"<<endl;
             for (int fila=0;fila<tam;fila++){
                 for (int col=0; col<tam; col++){
+
                     if (Matriz[col][fila]==mov){
-                        if(piezaActFila+1==fila){
-                            dire=1;
-                        } else if (piezaActFila-1==fila) {
-                            dire=2;
-                        } else if(piezaActCol+1==col){
-                            dire=3;
-                        } else if(piezaActCol+1==col){
-                            dire=4;
+                        int cont=0;
+                        while (Matriz[col][piezaActFila+cont]->getFree()==false && cont<tam){
+                            cont++;
                         }
-                        cout<<"dire: "<<dire<<endl;
-                        return true;
+                        if(piezaActFila+cont==fila && piezaActCol==col){
+                            cout<<"fila Act"<<piezaActFila+cont<<"fila mov"<<fila<<endl;
+                            dire=1;
+                            return true;
+                        }
+
+                        cont=0;
+                        while (Matriz[col][piezaActFila-cont]->getFree()==false && cont<tam){
+                            cont++;
+                        }
+
+                        if(piezaActFila-cont==fila && piezaActCol==col){
+                            dire=2;
+                            return true;
+                        }
+
+                        cont=0;
+                        while (Matriz[piezaActCol+cont][fila]->getFree()==false && cont<tam){
+                            cont++;
+                        }
+
+                        if(piezaActCol+cont==col && piezaActFila==fila){
+                            dire=3;
+                            return true;
+                        }
+
+                        cont=0;
+                        while (Matriz[piezaActCol-cont][fila]->getFree()==false && cont<tam){
+                            cont++;
+                        }
+
+                        if(piezaActCol-cont==col && piezaActFila==fila){
+                            dire=4;
+                            return true;
+                        }
                     }
                 }
             }
@@ -51,43 +84,63 @@ bool Tablero::direccion2(Pieza *mov){
 
 void Tablero::generarAdyacentes(int col, int fila){
     cout<<"llega ga2"<<endl;
+    cout<<"dire"<<dire<<endl;
     adyacentes2=adyacentes;
     adyacentes.limpiar();
-    int i=fila+1;
-    if(-1<i && i<tam && col<tam && fila<tam && (dire==1 || dire==0)){
-        if(Matriz[col][i]->getFree()){
-            cout<<Matriz[col][i]->toString()<<endl;
-            adyacentes.agregar(Matriz[col][i]);
+    int i=0;
+    while(Matriz[col][fila+i]->getFree()==false){
+        i++;
+    }
+    if(fila+i<tam && col<tam && fila<tam && (dire==1 || dire==0)){
+        cout<<Matriz[col][fila+i]->toString()<<endl;
+        adyacentes.agregar(Matriz[col][fila+i]);
+    }
+    i=0;
+    while(Matriz[col][fila-i]->getFree()==false){
+        i++;
+        if (fila-i==-1){
+            break;
         }
     }
-    i=fila-1;
-    if(-1<i && i<tam && col<tam && fila<tam && (dire==2 || dire==0)){
-        if(Matriz[col][i]->getFree()){
-            adyacentes.agregar(Matriz[col][i]);
-            cout<<Matriz[col][i]->toString()<<endl;
+
+    if(-1<fila-i && col<tam && fila<tam && (dire==2 || dire==0)){
+        cout<<Matriz[col][fila-i]->toString()<<endl;
+        adyacentes.agregar(Matriz[col][fila-i]);
+    }
+
+    i=0;
+    while(Matriz[col+i][fila]->getFree()==false){
+        i++;
+    }
+    if(col+1<tam && col<tam && fila<tam && (dire==3 || dire==0)){
+        cout<<Matriz[col+i][fila]->toString()<<endl;
+        adyacentes.agregar(Matriz[col+i][fila]);
+    }
+
+    i=0;
+    while(Matriz[col-i][fila]->getFree()==false){
+        i++;
+        if (col-i==-1){
+            break;
         }
     }
-    i=col+1;
-    if(-1<i && i<tam && col<tam && fila<tam && (dire==3 || dire==0)){
-        if(Matriz[i][fila]->getFree()){
-            adyacentes.agregar(Matriz[i][fila]);
-            cout<<Matriz[i][fila]->toString()<<endl;
-        }
+
+    if(-1<col-i && col<tam && fila<tam && (dire==4 || dire==0)){
+        cout<<Matriz[col-i][fila]->toString()<<endl;
+        adyacentes.agregar(Matriz[col-i][fila]);
     }
-    i=col-1;
-    if(-1<i && i<tam && col<tam && fila<tam && (dire==3 || dire==0)){
-        if(Matriz[i][fila]->getFree()){
-            adyacentes.agregar(Matriz[i][fila]);
-            cout<<Matriz[i][fila]->toString()<<endl;
-        }
-    }
+
+
 }
+
 
 void Tablero::generarPiezas(){
     for (int fila=0; fila<tam;fila++){
         for (int col=0; col<tam;col++){
-            Pieza *p= new Pieza(col*50,fila*50);
+            Pieza *p= new Pieza(col*40,fila*40);
             Matriz[col][fila]=p;
+            Pieza *p2= new Pieza(col*40,fila*40);
+            MatrizBack[col][fila]=p2;
         }
     }
 
@@ -101,10 +154,12 @@ void Tablero::generarFichas(){
                     'O','P','Q','R','S','T','U',
                      'V','W','X','Y','Z'};
     for (int fila=0; fila<4;fila++){
-        for (int col=0; col<3;col++){
+        for (int col=0; col<4;col++){
             char letra=letras[rand()%26];
-            Ficha *p= new Ficha(col*80+700,fila*80+100,letra);
+            Ficha *p= new Ficha(col*60+700,fila*80+100,letra);
             listaFichas[col][fila]=p;
+            Ficha *p2= new Ficha(col*60+700,fila*80+100,letra);
+            listaFichasBack[col][fila]=p2;
         }
     }
 }
@@ -126,16 +181,16 @@ void Tablero::paintEvent(QPaintEvent *event)
     }
 
     for (int fila=0; fila<4;fila++){
-        for (int col=0; col<3;col++){
+        for (int col=0; col<4;col++){
             int x=listaFichas[col][fila]->getFil();
             int y=listaFichas[col][fila]->getCol();
             char letra= listaFichas[col][fila]->getLetra();
-            dibujar->paint2(&painter,x,y,letra,QBrush(Qt::yellow));
+            QPen contorno= listaFichas[col][fila]->getContorno();
+            dibujar->paint2(&painter,x,y,letra,contorno);
         }
     }
 
     for (int q=0; q<adyacentes.tamano();q++){
-        //cout<<"el nodo"<<endl;
 
         int x=adyacentes.retornar(q)->getDato()->getFil();
         int y=adyacentes.retornar(q)->getDato()->getCol();
@@ -146,38 +201,41 @@ void Tablero::paintEvent(QPaintEvent *event)
 
 
     enviar = new QPushButton("Enviar",this);
-    enviar->setGeometry(QRect(QPoint(700,20),QSize(210,40)));
+    enviar->setGeometry(QRect(QPoint(700,20),QSize(220,40)));
     enviar->setVisible(true);
-    connect(enviar,SIGNAL(released()),this,SLOT(handleButton()));
+    connect(enviar,SIGNAL(released()),this,SLOT(handleEnviar()));
 
     eliminar = new QPushButton("Eliminar",this);
-    eliminar->setGeometry(QRect(QPoint(700,425),QSize(210,40)));
+    eliminar->setGeometry(QRect(QPoint(700,425),QSize(220,40)));
     eliminar->setVisible(true);
-    connect(eliminar,SIGNAL(released()),this,SLOT(handleButton2()));
+    connect(eliminar,SIGNAL(released()),this,SLOT(handleEliminar()));
 
     pasar = new QPushButton("Pasar",this);
-    pasar->setGeometry(QRect(QPoint(700,475),QSize(210,40)));
+    pasar->setGeometry(QRect(QPoint(700,475),QSize(220,40)));
     pasar->setVisible(true);
-    connect(pasar,SIGNAL(released()),this,SLOT(handleButton3()));
+    connect(pasar,SIGNAL(released()),this,SLOT(handlePasar()));
 
     salir = new QPushButton("Salir",this);
-    salir->setGeometry(QRect(QPoint(700,525),QSize(210,40)));
+    salir->setGeometry(QRect(QPoint(700,525),QSize(220,40)));
     salir->setVisible(true);
-    connect(salir,SIGNAL(released()),this,SLOT(handleButton4()));
+    connect(salir,SIGNAL(released()),this,SLOT(handleSalir()));
 }
 
 void Tablero::mousePressEvent(QMouseEvent *event){
     for (int fila=0;fila<4;fila++){
-        for (int col = 0; col < 3; col++) {
+        for (int col = 0; col < 4; col++) {
             int fichaX=listaFichas[col][fila]->getFil();
             int fichaY=listaFichas[col][fila]->getCol();
-            if(event->x()<fichaX+50 && event->x()>fichaX && event->y()<fichaY+50 && event->y()>fichaY){
-                cout<<fichaX<<" "<<fichaY<<endl;
+            if(event->x()<fichaX+40 && event->x()>fichaX && event->y()<fichaY+40 && event->y()>fichaY){
+                if (fichaSelec!=nullptr){
+                    fichaSelec->setContorno(QPen(Qt::black));
+                }
                 fichaSelec=listaFichas[col][fila];
+                fichaSelec->setContorno(QPen(Qt::red));
                 ponerFCol=col;
                 ponerFFil=fila;
-                //ponerF=q;
                 cout<<"ficha seleccionada "<<"("<<col<<","<<fila<<")"<<endl;
+                repaint();
             }
         }
     }
@@ -186,7 +244,7 @@ void Tablero::mousePressEvent(QMouseEvent *event){
         for (int col = 0; col < tam; col++) {
             int piezaX=Matriz[col][fila]->getFil();
             int piezaY=Matriz[col][fila]->getCol();
-            if(event->x()<piezaX+50 && event->x()>piezaX && event->y()<piezaY+50 && event->y()>piezaY){
+            if(event->x()<piezaX+40 && event->x()>piezaX && event->y()<piezaY+40 && event->y()>piezaY && fichaSelec!=nullptr){
                 cout<<piezaX<<" "<<piezaY<<endl;
                 piezaSelec=Matriz[col][fila];
                 ponerPCol=col;
@@ -196,15 +254,13 @@ void Tablero::mousePressEvent(QMouseEvent *event){
         }
     }
 
-
-    cout<<"ESTO SE ENVIA"<<ponerPCol<<ponerPFil<<endl;
-    cout<<"ESTO SE ENVIA"<<ponerFCol<<ponerFFil<<endl;
     if (fichaSelec!=nullptr && piezaSelec!=nullptr){
         if (dire==0 && piezaActCol!=-1 && piezaActFila!=-1){
             adyacentes2=adyacentes;
-            direccion2(piezaSelec);
-            asignarFicha(ponerPCol,ponerPFil,ponerFCol,ponerFFil);
-        } else {
+            if(direccion(piezaSelec)){
+                asignarFicha(ponerPCol,ponerPFil,ponerFCol,ponerFFil);
+            }
+        } else if (fichaSelec->getCol()!=piezaSelec->getCol() && fichaSelec->getFil()!=piezaSelec->getFil()){
             asignarFicha(ponerPCol,ponerPFil,ponerFCol,ponerFFil);
         }
 
@@ -212,21 +268,13 @@ void Tablero::mousePressEvent(QMouseEvent *event){
 
 }
 void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaFila){
-    if (piezaActCol==-1 && piezaActFila==-1){
+    fichaSelec->setContorno(QPen(Qt::black));
+    cout<<"pieza actual"<<piezaActCol<<piezaActFila<<endl;
+    if ((piezaActCol==-1 && piezaActFila==-1) || verificarDireccion(piezaCol,piezaFila)){
         piezaActCol=piezaCol;
         piezaActFila=piezaFila;
         adyacentes.limpiar();
         Matriz[piezaCol][piezaFila]->setFletra(listaFichas[fichaCol][fichaFila]);
-        generarAdyacentes(piezaCol,piezaFila);
-    } else if (verificarDireccion(piezaCol,piezaFila)){
-        cout<<"pasa veri"<<endl;
-        piezaActCol=piezaCol;
-        piezaActFila=piezaFila;
-        adyacentes.limpiar();
-        cout<<"pieza"<<piezaCol<<piezaFila<<endl;
-        cout<<"ficha"<<fichaCol<<fichaFila<<endl;
-        Matriz[piezaCol][piezaFila]->setFletra(listaFichas[fichaCol][fichaFila]);
-        cout<<"se añande fletra"<<endl;
         generarAdyacentes(piezaCol,piezaFila);
     }
     ponerFCol=-1;
@@ -238,40 +286,104 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
     repaint();
 }
 bool Tablero::verificarDireccion(int piezaCol, int piezaFila){
-    cout<<"veri"<<endl;
-    if (dire==1 && piezaActFila + 1 == piezaFila){
-        return true;
-    } else if (dire==2 && piezaActFila - 1 == piezaFila){
-        return true;
-    } else if (dire==3 && piezaActCol + 1 == piezaCol){
-        return true;
-    } else if (dire==4 && piezaActCol - 1 == piezaCol){
-        return true;
+    for (int q=0; q<adyacentes.tamano();q++){
+        if (Matriz[piezaCol][piezaFila]==adyacentes.retornar(q)->getDato()){
+            return true;
+        }
     }
-    return false;
+    return  false;
+
 }
 
-void Tablero::handleButton()
+void Tablero::handleEnviar()
 {
-    contCol++;
+    /*contCol++;
     cout<<contCol<<","<<contfila<<endl;
-    if (contCol==12){
+    if (contCol==15){
         contCol=0;
         contfila++;
     }
     generarAdyacentes(contCol,contfila);
+    repaint();*/
+    cout<<"entra"<<endl;
+    for (int fila=0;fila<tam;fila++){
+        for (int col=0;col<tam;col++){
+            int filaB=Matriz[col][fila]->getFil();
+            int colB=Matriz[col][fila]->getCol();
+            MatrizBack[col][fila]->setFil(filaB);
+            MatrizBack[col][fila]->setCol(colB);
+            MatrizBack[col][fila]->setFletra(Matriz[col][fila]->getFletra());
+            Matriz[col][fila]->setFree(MatrizBack[col][fila]->getFree());
+
+        }
+    }
+    cout<<"respalda matriz"<<endl;
+
+    for (int fila=0;fila<4;fila++){
+        for (int col=0;col<4;col++){
+            int filaB=listaFichas[col][fila]->getFil();
+            int colB=listaFichas[col][fila]->getCol();
+            listaFichasBack[col][fila]->setFil(filaB);
+            listaFichasBack[col][fila]->setCol(colB);
+
+        }
+    }
+    cout<<"respalda fichas"<<endl;
+    adyacentes.limpiar();
+    adyacentes2.limpiar();
+
+    inicializar();
+
+}
+
+void Tablero::inicializar(){
+    ponerPCol=-1;
+    ponerPFil=-1;
+    ponerFCol=-1;
+    ponerFFil=-1;
+
+    piezaActCol=-1;
+    piezaActFila=-1;
+
+    dire=0;
+
+    fichaSelec=nullptr;
+    piezaSelec=nullptr;
+
     repaint();
 }
-void Tablero::handleButton2()
+void Tablero::handleEliminar()
+{
+    for (int fila=0;fila<tam;fila++){
+        for (int col=0;col<tam;col++){
+            int filaB=MatrizBack[col][fila]->getFil();
+            int colB=MatrizBack[col][fila]->getCol();
+            Matriz[col][fila]->setFil(filaB);
+            Matriz[col][fila]->setCol(colB);
+            Matriz[col][fila]->setFletra(MatrizBack[col][fila]->getFletra());
+            Matriz[col][fila]->setFree(MatrizBack[col][fila]->getFree());
+
+        }
+    }
+
+    for (int fila=0;fila<4;fila++){
+        for (int col=0;col<4;col++){
+            int filaB=listaFichasBack[col][fila]->getFil();
+            int colB=listaFichasBack[col][fila]->getCol();
+            listaFichas[col][fila]->setFil(filaB);
+            listaFichas[col][fila]->setCol(colB);
+        }
+    }
+    adyacentes.limpiar();
+    inicializar();
+
+
+}
+void Tablero::handlePasar()
 {
 
 }
-void Tablero::handleButton3()
+void Tablero::handleSalir()
 {
-
-}
-void Tablero::handleButton4()
-{
-
-    repaint();
+    exit(true);
 }

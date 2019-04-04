@@ -23,18 +23,19 @@ public:
     void generarPiezas();
     void generarAdyacentes(int col, int fila);
     void generarFichas();
-    bool direccion2(Pieza* mov);
+    bool direccion(Pieza* mov);
     void mousePressEvent(QMouseEvent *event) override;
     void asignarFicha(int piezaCol, int piezaFil, int fichaCol, int fichaFil);
     bool verificarDireccion(int piezaCol, int piezaFila);
+    void inicializar();
 protected:
     void paintEvent(QPaintEvent *event) override;
 
 private slots:
-    void handleButton();
-    void handleButton2();
-    void handleButton3();
-    void handleButton4();
+    void handleEnviar();
+    void handleEliminar();
+    void handlePasar();
+    void handleSalir();
 
 private:
     Dibujar *dibujar;
@@ -44,12 +45,14 @@ private:
     QPushButton *eliminar;
     QPushButton *pasar;
     QPushButton *salir;
-    Pieza *Matriz[12][12] {};
+    Pieza *Matriz[15][15] {};
+    Pieza *MatrizBack[15][15] {};
     ListaPieza adyacentes;
     ListaPieza adyacentes2;
-    Pieza *adyacentess[4] {};
-    Pieza *adyacentes22[4] {};
-    Ficha *listaFichas[3][4] {};
+    ListaPieza adyacentesBack;
+    ListaPieza adyacentes2Back;
+    Ficha *listaFichas[4][4] {};
+    Ficha *listaFichasBack[4][4] {};
     Ficha *fichaSelec=nullptr;
     Pieza *piezaSelec=nullptr;
 
@@ -60,7 +63,7 @@ private:
 
     int piezaActCol=-1;
     int piezaActFila=-1;
-    int tam=12;
+    int tam=15;
     int dire=0;
     int contfila=10;
     int contCol=-1;

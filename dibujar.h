@@ -12,12 +12,13 @@ class Dibujar
 public:
     Dibujar();
     void paint(QPainter *painter, int x, int y, QBrush relleno);
-    void paint2(QPainter *painter, int x, int y, char letra, QBrush relleno);
+    void paint2(QPainter *painter, int x, int y, char letra, QPen contorno);
 
 private:
-    QPen contorno;
+    QPen contornoFicha;
     QPen textPen;
     QFont textFont;
+    QPen contornoPieza;
 };
 
 #endif // DIBUJAR_H
