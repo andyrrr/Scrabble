@@ -10,8 +10,13 @@
 #include <cstdlib>
 #include <string>
 #include<time.h>
+#include "Lista.h"
+#include "funcionescliente.h"
 
 using namespace std;
+Lista *ls = new Lista();
+FuncionesCliente *fnC = new FuncionesCliente();
+
 
 Tablero::Tablero(Dibujar *dibujar,QWidget *parent):QWidget(parent),dibujar(dibujar)
 {
@@ -149,16 +154,17 @@ void Tablero::generarPiezas(){
 
 void Tablero::generarFichas(){
     srand(time(NULL));
-    char letras[26]={'A','B','C','D','E','F','G',
-                    'H','I','J','K','L','M','N',
-                    'O','P','Q','R','S','T','U',
-                     'V','W','X','Y','Z'};
+    char *letras[]={"A","B","C","D","E","F","G",
+                    "H","I","J","K","L","M","N",
+                    "O","P","Q","R","S","T","U",
+                     "V","W","X","Y","Z"};
     for (int fila=0; fila<4;fila++){
         for (int col=0; col<4;col++){
-            char letra=letras[rand()%26];
-            Ficha *p= new Ficha(col*60+700,fila*80+100,letra);
+            char *letra=letras[rand()%26];
+            std::string s(letra);
+            Ficha *p= new Ficha(col*60+700,fila*80+100,s);
             listaFichas[col][fila]=p;
-            Ficha *p2= new Ficha(col*60+700,fila*80+100,letra);
+            Ficha *p2= new Ficha(col*60+700,fila*80+100,s);
             listaFichasBack[col][fila]=p2;
         }
     }
@@ -184,7 +190,7 @@ void Tablero::paintEvent(QPaintEvent *event)
         for (int col=0; col<4;col++){
             int x=listaFichas[col][fila]->getFil();
             int y=listaFichas[col][fila]->getCol();
-            char letra= listaFichas[col][fila]->getLetra();
+            std::string letra= listaFichas[col][fila]->getLetra();
             QPen contorno= listaFichas[col][fila]->getContorno();
             dibujar->paint2(&painter,x,y,letra,contorno);
         }
@@ -269,6 +275,12 @@ void Tablero::mousePressEvent(QMouseEvent *event){
 }
 void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaFila){
     fichaSelec->setContorno(QPen(Qt::black));
+    /**
+      ls->addLetra(letra,piezaFila,piezaCol); lo que hace es agregar la letra en mi lista, obteniendoi los
+      valores de las posiciones, y aqui es donde me està dando el error.
+      La primer letra, y por ende los primeros valores de Columna y Fila al parecer no tienen ningun dato
+      entonces cuando se imprime el json, la primer letra no posee la posicion como las demàs.s
+      */
     cout<<"pieza actual"<<piezaActCol<<piezaActFila<<endl;
     if ((piezaActCol==-1 && piezaActFila==-1) || verificarDireccion(piezaCol,piezaFila)){
         piezaActCol=piezaCol;
@@ -282,8 +294,12 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
             //cout<<(Matriz[piezaActCol][piezaActFila+cont]->getFree()==false)<<endl;
             //cout<<(1==1)<<endl;
             while (cont<tam && Matriz[piezaActCol][piezaActFila+cont]->getFree()==false){
-                palabraFormada=palabraFormada+Matriz[piezaActCol][piezaActFila+cont]->getFletra()->getLetra();
+                int columna = piezaActCol;
+                int fila = piezaActFila+cont;
+                std::string letra = Matriz[piezaActCol][piezaActFila+cont]->getFletra()->getLetra();
+                palabraFormada=palabraFormada+letra;
                 cont++;
+                ls->addLetra(letra,piezaFila,piezaCol);
                 //cout<<"letraagregada"<<endl;
             }
         }
@@ -291,17 +307,26 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
             //cout<<(Matriz[piezaActCol][piezaActFila+cont]->getFree()==false)<<endl;
             //cout<<(1==1)<<endl;
             while (-1<piezaActFila-cont && Matriz[piezaActCol][piezaActFila-cont]->getFree()==false){
-                palabraFormada=palabraFormada+Matriz[piezaActCol][piezaActFila-cont]->getFletra()->getLetra();
+                int columna = piezaActCol;
+                int fila = piezaActFila-cont;
+                std::string letra = Matriz[piezaActCol][piezaActFila-cont]->getFletra()->getLetra();
+                palabraFormada=palabraFormada+ letra;
                 cont++;
+                ls->addLetra(letra,piezaFila,piezaCol);
                 //cout<<"letraagregada"<<endl;
             }
         }
         if(dire==3 || dire==0){
             //cout<<(Matriz[piezaActCol][piezaActFila+cont]->getFree()==false)<<endl;
             //cout<<(1==1)<<endl;
+
             while (cont<tam && Matriz[piezaActCol+cont][piezaActFila]->getFree()==false){
-                palabraFormada=palabraFormada+Matriz[piezaActCol+cont][piezaActFila]->getFletra()->getLetra();
+                int columna = piezaActCol+cont;
+                int fila = piezaActFila;
+                std::string letra = Matriz[piezaActCol+cont][piezaActFila]->getFletra()->getLetra();
+                palabraFormada=palabraFormada+letra;
                 cont++;
+                ls->addLetra(letra,piezaFila,piezaCol);
                 //cout<<"letraagregada"<<endl;
             }
         }
@@ -310,8 +335,13 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
             //cout<<(Matriz[piezaActCol][piezaActFila+cont]->getFree()==false)<<endl;
             //cout<<(1==1)<<endl;
             while (-1<piezaActCol-cont && Matriz[piezaActCol-cont][piezaActFila]->getFree()==false){
-                palabraFormada=palabraFormada+Matriz[piezaActCol-cont][piezaActFila]->getFletra()->getLetra();
+                int columna = piezaActCol-cont;
+                int fila = piezaActFila;
+                std::string letra = Matriz[piezaActCol-cont][piezaActFila]->getFletra()->getLetra();
+                palabraFormada=palabraFormada+letra;
                 cont++;
+                ls->addLetra(letra,piezaFila,piezaCol);
+
                 //cout<<"letraagregada"<<endl;
             }
         }
@@ -346,6 +376,13 @@ void Tablero::handleEnviar()
     generarAdyacentes(contCol,contfila);
     repaint();*/
     cout<<"entra"<<endl;
+    /**
+     * @brief jsonGen
+     * Aqui lo que hace es hacer un archivo Json a partir de la funcion en "funcionescliente",
+     * el jsonGen.dump() imprime el Json en consola.
+     */
+    json jsonGen = fnC->generarJson(*ls);
+    cout << jsonGen.dump(2)<<endl;
     cout<<palabraFormada<<endl;
     for (int fila=0;fila<tam;fila++){
         for (int col=0;col<tam;col++){
@@ -374,6 +411,7 @@ void Tablero::handleEnviar()
     adyacentes2.limpiar();
 
     inicializar();
+    ls->clear();
 
 }
 

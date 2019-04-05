@@ -1,6 +1,6 @@
 #include "ficha.h"
 
-Ficha::Ficha(int fil, int col, char letra) : Col(col), Fil(fil),Letra(letra), Contorno(QPen(Qt::black)){}
+Ficha::Ficha(int fil, int col, std::string letra) : Col(col), Fil(fil),Letra(letra), Contorno(QPen(Qt::black)){}
 
 
 int Ficha::getCol() const {
@@ -19,12 +19,12 @@ void Ficha::setFil(int fil) {
     Fil = fil;
 }
 
-char Ficha::getLetra() const {
+std::string Ficha::getLetra() const {
     return Letra;
 }
 
-void Ficha::setLetra(char letra) {
-    Col = letra;
+void Ficha::setLetra(std::string le) {
+    Letra = le;
 }
 void Ficha::setContorno(QPen contorno){
     Contorno=contorno;

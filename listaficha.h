@@ -27,7 +27,6 @@ public:
     string toString();
     void limpiar();
     ~ListaFicha();
-private:
     NodoFicha *getInicio();
     void setInicio(NodoFicha *inicio);
     NodoFicha *getFin();
