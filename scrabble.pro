@@ -25,8 +25,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        Lista.cpp \
+        Nodo.cpp \
         dibujar.cpp \
         ficha.cpp \
+        funcionescliente.cpp \
         listaPieza.cpp \
         listaficha.cpp \
         main.cpp \
@@ -35,8 +38,12 @@ SOURCES += \
         tablero.cpp
 
 HEADERS += \
+        Lista.h \
+        Nodo.h \
         dibujar.h \
         ficha.h \
+        funcionescliente.h \
+        json.hpp \
         listaPieza.h \
         listaficha.h \
         pieza.h \

@@ -12,7 +12,7 @@ class Dibujar
 public:
     Dibujar();
     void paint(QPainter *painter, int x, int y, QBrush relleno);
-    void paint2(QPainter *painter, int x, int y, char letra, QPen contorno);
+    void paint2(QPainter *painter, int x, int y, std::string letra, QPen contorno);
 
 private:
     QPen contornoFicha;

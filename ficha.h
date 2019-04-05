@@ -7,20 +7,20 @@
 
 class Ficha{
 public:
-    Ficha(int col, int fila, char letra);
+    Ficha(int col, int fila, std::string letra);
     int getCol() const;
     void setCol(int col);
     int getFil() const;
     void setFil(int fil);
-    char getLetra() const;
-    void setLetra(char letra);
+    std::string getLetra() const;
+    void setLetra(std::string letra);
     void setContorno(QPen contorno);
     QPen getContorno();
 
 private:
     int Col;
     int Fil;
-    char Letra;
+    std::string Letra;
     QPen Contorno;
 };
 
