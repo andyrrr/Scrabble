@@ -10,8 +10,8 @@
 
 class Nodo {
 public:
-    int fil=0;
-    int col=0;
+    int fil=5;
+    int col=5;
     std::string letra;
     Nodo *next;
 

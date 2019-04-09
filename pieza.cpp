@@ -1,16 +1,16 @@
 #include "pieza.h"
 #include <string>
 using namespace std;
-    Pieza::Pieza(int fil, int col) : Col(col), Fil(fil),Free(true){
+    Pieza::Pieza(int y, int x) : X(x), Y(y),Free(true){
         Fletra = nullptr;
     }
 
-    int Pieza::getCol() const {
-        return Col;
+    int Pieza::getX() const {
+        return X;
     }
 
-    void Pieza::setCol(int col) {
-        Col = col;
+    void Pieza::setX(int x) {
+        X = x;
     }
     bool Pieza::getFree() const {
         return Free;
@@ -26,21 +26,21 @@ using namespace std;
     void Pieza::setFletra(Ficha *fletra) {
         Fletra=fletra;
         if(fletra!=nullptr){
-            Fletra->setCol(Col);
-            Fletra->setFil(Fil);
+            Fletra->setX(X);
+            Fletra->setY(Y);
             this->setFree(false);
         }
     }
 
-    int Pieza::getFil() const {
-        return Fil;
+    int Pieza::getY() const {
+        return Y;
     }
 
-    void Pieza::setFil(int fil) {
-        Fil = fil;
+    void Pieza::setY(int y) {
+        Y = y;
     }
     string Pieza::toString(){
         string final;
-        final = "("+to_string(getCol())+","+to_string(getFil())+")";
+        final = "("+to_string(getX())+","+to_string(getY())+")";
         return final;
     }

@@ -1,6 +1,7 @@
 #include "tablero.h"
 #include "dibujar.h"
 #include "listaPieza.h"
+#include "empaquetar.h"
 
 #include <QPainter>
 #include <QPushButton>
@@ -11,11 +12,24 @@
 #include <string>
 #include<time.h>
 #include "Lista.h"
-#include "funcionescliente.h"
+
+#include <stdio.h>
+#include <iostream>
+#include <string.h> //strlen
+#include <stdlib.h>
+#include <errno.h>
+#include <unistd.h> //close
+#include <arpa/inet.h> //close
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/time.h>
+#include <string>
+
+
 
 using namespace std;
 Lista *ls = new Lista();
-FuncionesCliente *fnC = new FuncionesCliente();
 
 
 Tablero::Tablero(Dibujar *dibujar,QWidget *parent):QWidget(parent),dibujar(dibujar)
@@ -179,8 +193,8 @@ void Tablero::paintEvent(QPaintEvent *event)
 
     for (int fila=0; fila<tam;fila++){
         for (int col=0; col<tam;col++){
-            int x=Matriz[col][fila]->getFil();
-            int y=Matriz[col][fila]->getCol();
+            int x=Matriz[col][fila]->getY();
+            int y=Matriz[col][fila]->getX();
             dibujar->paint(&painter,x,y,fondo);
 
         }
@@ -188,8 +202,8 @@ void Tablero::paintEvent(QPaintEvent *event)
 
     for (int fila=0; fila<4;fila++){
         for (int col=0; col<4;col++){
-            int x=listaFichas[col][fila]->getFil();
-            int y=listaFichas[col][fila]->getCol();
+            int x=listaFichas[col][fila]->getY();
+            int y=listaFichas[col][fila]->getX();
             std::string letra= listaFichas[col][fila]->getLetra();
             QPen contorno= listaFichas[col][fila]->getContorno();
             dibujar->paint2(&painter,x,y,letra,contorno);
@@ -198,8 +212,8 @@ void Tablero::paintEvent(QPaintEvent *event)
 
     for (int q=0; q<adyacentes.tamano();q++){
 
-        int x=adyacentes.retornar(q)->getDato()->getFil();
-        int y=adyacentes.retornar(q)->getDato()->getCol();
+        int x=adyacentes.retornar(q)->getDato()->getY();
+        int y=adyacentes.retornar(q)->getDato()->getX();
         dibujar->paint(&painter,x,y,QBrush(Qt::green));
     }
 
@@ -230,8 +244,8 @@ void Tablero::paintEvent(QPaintEvent *event)
 void Tablero::mousePressEvent(QMouseEvent *event){
     for (int fila=0;fila<4;fila++){
         for (int col = 0; col < 4; col++) {
-            int fichaX=listaFichas[col][fila]->getFil();
-            int fichaY=listaFichas[col][fila]->getCol();
+            int fichaX=listaFichas[col][fila]->getY();
+            int fichaY=listaFichas[col][fila]->getX();
             if(event->x()<fichaX+40 && event->x()>fichaX && event->y()<fichaY+40 && event->y()>fichaY){
                 if (fichaSelec!=nullptr){
                     fichaSelec->setContorno(QPen(Qt::black));
@@ -248,8 +262,8 @@ void Tablero::mousePressEvent(QMouseEvent *event){
 
     for (int fila=0;fila<tam;fila++){
         for (int col = 0; col < tam; col++) {
-            int piezaX=Matriz[col][fila]->getFil();
-            int piezaY=Matriz[col][fila]->getCol();
+            int piezaX=Matriz[col][fila]->getY();
+            int piezaY=Matriz[col][fila]->getX();
             if(event->x()<piezaX+40 && event->x()>piezaX && event->y()<piezaY+40 && event->y()>piezaY && fichaSelec!=nullptr){
                 cout<<piezaX<<" "<<piezaY<<endl;
                 piezaSelec=Matriz[col][fila];
@@ -266,7 +280,7 @@ void Tablero::mousePressEvent(QMouseEvent *event){
             if(direccion(piezaSelec)){
                 asignarFicha(ponerPCol,ponerPFil,ponerFCol,ponerFFil);
             }
-        } else if (fichaSelec->getCol()!=piezaSelec->getCol() && fichaSelec->getFil()!=piezaSelec->getFil()){
+        } else if (fichaSelec->getX()!=piezaSelec->getX() && fichaSelec->getY()!=piezaSelec->getY()){
             asignarFicha(ponerPCol,ponerPFil,ponerFCol,ponerFFil);
         }
 
@@ -289,6 +303,9 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
         int cont=0;
         //cout<<"direccion PPP"<<dire<<endl;
         Matriz[piezaCol][piezaFila]->setFletra(listaFichas[fichaCol][fichaFila]);
+        Matriz[piezaCol][piezaFila]->getFletra()->setColM(piezaCol);
+        Matriz[piezaCol][piezaFila]->getFletra()->setFilM(piezaFila);
+        cout<<"ficha en matriz"<<listaFichas[fichaCol][fichaFila]->getColM()<<listaFichas[fichaCol][fichaFila]->getFilM()<<endl;
         generarAdyacentes(piezaCol,piezaFila);
         if(dire==1 || dire==0){
             //cout<<(Matriz[piezaActCol][piezaActFila+cont]->getFree()==false)<<endl;
@@ -296,7 +313,7 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
             while (cont<tam && Matriz[piezaActCol][piezaActFila+cont]->getFree()==false){
                 int columna = piezaActCol;
                 int fila = piezaActFila+cont;
-                std::string letra = Matriz[piezaActCol][piezaActFila+cont]->getFletra()->getLetra();
+                std::string letra = Matriz[columna][fila]->getFletra()->getLetra();
                 palabraFormada=palabraFormada+letra;
                 cont++;
                 ls->addLetra(letra,piezaFila,piezaCol);
@@ -309,7 +326,7 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
             while (-1<piezaActFila-cont && Matriz[piezaActCol][piezaActFila-cont]->getFree()==false){
                 int columna = piezaActCol;
                 int fila = piezaActFila-cont;
-                std::string letra = Matriz[piezaActCol][piezaActFila-cont]->getFletra()->getLetra();
+                std::string letra = Matriz[columna][fila]->getFletra()->getLetra();
                 palabraFormada=palabraFormada+ letra;
                 cont++;
                 ls->addLetra(letra,piezaFila,piezaCol);
@@ -323,7 +340,7 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
             while (cont<tam && Matriz[piezaActCol+cont][piezaActFila]->getFree()==false){
                 int columna = piezaActCol+cont;
                 int fila = piezaActFila;
-                std::string letra = Matriz[piezaActCol+cont][piezaActFila]->getFletra()->getLetra();
+                std::string letra = Matriz[columna][fila]->getFletra()->getLetra();
                 palabraFormada=palabraFormada+letra;
                 cont++;
                 ls->addLetra(letra,piezaFila,piezaCol);
@@ -337,7 +354,7 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
             while (-1<piezaActCol-cont && Matriz[piezaActCol-cont][piezaActFila]->getFree()==false){
                 int columna = piezaActCol-cont;
                 int fila = piezaActFila;
-                std::string letra = Matriz[piezaActCol-cont][piezaActFila]->getFletra()->getLetra();
+                std::string letra = Matriz[columna][fila]->getFletra()->getLetra();
                 palabraFormada=palabraFormada+letra;
                 cont++;
                 ls->addLetra(letra,piezaFila,piezaCol);
@@ -381,15 +398,16 @@ void Tablero::handleEnviar()
      * Aqui lo que hace es hacer un archivo Json a partir de la funcion en "funcionescliente",
      * el jsonGen.dump() imprime el Json en consola.
      */
-    json jsonGen = fnC->generarJson(*ls);
+    Empaquetar *paquete = new Empaquetar(JugadorID, JuegoID, false, true, false, ls);
+    json jsonGen = paquete->generarJson();
     cout << jsonGen.dump(2)<<endl;
     cout<<palabraFormada<<endl;
     for (int fila=0;fila<tam;fila++){
         for (int col=0;col<tam;col++){
-            int filaB=Matriz[col][fila]->getFil();
-            int colB=Matriz[col][fila]->getCol();
-            MatrizBack[col][fila]->setFil(filaB);
-            MatrizBack[col][fila]->setCol(colB);
+            int filaB=Matriz[col][fila]->getY();
+            int colB=Matriz[col][fila]->getX();
+            MatrizBack[col][fila]->setY(filaB);
+            MatrizBack[col][fila]->setX(colB);
             MatrizBack[col][fila]->setFletra(Matriz[col][fila]->getFletra());
             Matriz[col][fila]->setFree(MatrizBack[col][fila]->getFree());
 
@@ -399,16 +417,17 @@ void Tablero::handleEnviar()
 
     for (int fila=0;fila<4;fila++){
         for (int col=0;col<4;col++){
-            int filaB=listaFichas[col][fila]->getFil();
-            int colB=listaFichas[col][fila]->getCol();
-            listaFichasBack[col][fila]->setFil(filaB);
-            listaFichasBack[col][fila]->setCol(colB);
+            int filaB=listaFichas[col][fila]->getY();
+            int colB=listaFichas[col][fila]->getX();
+            listaFichasBack[col][fila]->setY(filaB);
+            listaFichasBack[col][fila]->setX(colB);
 
         }
     }
     cout<<"respalda fichas"<<endl;
     adyacentes.limpiar();
     adyacentes2.limpiar();
+    const char* palabra="hola";
 
     inicializar();
     ls->clear();
@@ -437,10 +456,10 @@ void Tablero::handleEliminar()
 {
     for (int fila=0;fila<tam;fila++){
         for (int col=0;col<tam;col++){
-            int filaB=MatrizBack[col][fila]->getFil();
-            int colB=MatrizBack[col][fila]->getCol();
-            Matriz[col][fila]->setFil(filaB);
-            Matriz[col][fila]->setCol(colB);
+            int filaB=MatrizBack[col][fila]->getY();
+            int colB=MatrizBack[col][fila]->getX();
+            Matriz[col][fila]->setY(filaB);
+            Matriz[col][fila]->setX(colB);
             Matriz[col][fila]->setFletra(MatrizBack[col][fila]->getFletra());
             Matriz[col][fila]->setFree(MatrizBack[col][fila]->getFree());
 
@@ -449,15 +468,14 @@ void Tablero::handleEliminar()
 
     for (int fila=0;fila<4;fila++){
         for (int col=0;col<4;col++){
-            int filaB=listaFichasBack[col][fila]->getFil();
-            int colB=listaFichasBack[col][fila]->getCol();
-            listaFichas[col][fila]->setFil(filaB);
-            listaFichas[col][fila]->setCol(colB);
+            int filaB=listaFichasBack[col][fila]->getY();
+            int colB=listaFichasBack[col][fila]->getX();
+            listaFichas[col][fila]->setY(filaB);
+            listaFichas[col][fila]->setX(colB);
         }
     }
     adyacentes.limpiar();
     inicializar();
-
 
 }
 void Tablero::handlePasar()

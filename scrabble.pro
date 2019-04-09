@@ -28,6 +28,7 @@ SOURCES += \
         Lista.cpp \
         Nodo.cpp \
         dibujar.cpp \
+        empaquetar.cpp \
         ficha.cpp \
         funcionescliente.cpp \
         listaPieza.cpp \
@@ -41,8 +42,8 @@ HEADERS += \
         Lista.h \
         Nodo.h \
         dibujar.h \
+        empaquetar.h \
         ficha.h \
-        funcionescliente.h \
         json.hpp \
         listaPieza.h \
         listaficha.h \

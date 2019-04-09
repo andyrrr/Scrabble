@@ -28,6 +28,7 @@ public:
     void asignarFicha(int piezaCol, int piezaFil, int fichaCol, int fichaFil);
     bool verificarDireccion(int piezaCol, int piezaFila);
     void inicializar();
+    void actualizar();
 protected:
     void paintEvent(QPaintEvent *event) override;
 
@@ -68,6 +69,10 @@ private:
     int contfila=10;
     int contCol=-1;
     string palabraFormada;
+
+    int JugadorID;
+    int JuegoID;
+
 };
 
 #endif // TABLERO_H

@@ -1,29 +1,46 @@
 #include "ficha.h"
 
-Ficha::Ficha(int fil, int col, std::string letra) : Col(col), Fil(fil),Letra(letra), Contorno(QPen(Qt::black)){}
+using namespace std;
+
+Ficha::Ficha(int y, int x, string letra) : X(x), Y(y),Letra(letra), Contorno(QPen(Qt::black)){}
 
 
-int Ficha::getCol() const {
-    return Col;
+int Ficha::getX() const {
+    return X;
 }
 
-void Ficha::setCol(int col) {
-    Col = col;
+void Ficha::setX(int x) {
+    X = x;
 }
 
-int Ficha::getFil() const {
-    return Fil;
+int Ficha::getY() const {
+    return Y;
 }
 
-void Ficha::setFil(int fil) {
-    Fil = fil;
+void Ficha::setY(int y) {
+    Y = y;
+}
+int Ficha::getColM() const {
+    return ColM;
 }
 
-std::string Ficha::getLetra() const {
+void Ficha::setColM(int colM) {
+    ColM = colM;
+}
+
+int Ficha::getFilM() const {
+    return FilM;
+}
+
+void Ficha::setFilM(int filM) {
+    FilM = filM;
+}
+
+string Ficha::getLetra() const {
     return Letra;
 }
 
-void Ficha::setLetra(std::string le) {
+void Ficha::setLetra(string le) {
     Letra = le;
 }
 void Ficha::setContorno(QPen contorno){

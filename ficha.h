@@ -3,24 +3,30 @@
 
 #include <QPen>
 
-
+using namespace std;
 
 class Ficha{
 public:
-    Ficha(int col, int fila, std::string letra);
-    int getCol() const;
-    void setCol(int col);
-    int getFil() const;
-    void setFil(int fil);
-    std::string getLetra() const;
-    void setLetra(std::string letra);
+    Ficha(int x, int y, string letra);
+    int getX() const;
+    void setX(int x);
+    int getY() const;
+    void setY(int y);
+    int getColM() const;
+    void setColM(int colM);
+    int getFilM() const;
+    void setFilM(int filM);
+    string getLetra() const;
+    void setLetra(string letra);
     void setContorno(QPen contorno);
     QPen getContorno();
 
 private:
-    int Col;
-    int Fil;
-    std::string Letra;
+    int X;
+    int Y;
+    int ColM;
+    int FilM;
+    string Letra;
     QPen Contorno;
 };
 

@@ -25,6 +25,8 @@ Lista::Lista() {
 void Lista::addLetra(std::string dato,int fila,int colum) {
     Nodo *temp = new Nodo;
     temp->letra = dato;
+    temp->fil = fila;
+    temp->col = colum;
     temp->next = NULL;
 
     if (!head) { //
@@ -46,7 +48,6 @@ void Lista::addLetra(std::string dato,int fila,int colum) {
 void Lista::vernodos() {
     Nodo *temp;
     temp = head;
-    int i = 1;
     while (temp != NULL) {
         std::cout <<temp->letra << " "<< std::endl;
         temp = temp->next;
@@ -55,7 +56,6 @@ void Lista::vernodos() {
 void Lista::clear(){
     Nodo *temp;
     temp = head;
-    int i = 1;
     while (temp != NULL) {
         free (temp);
         temp = temp->next;

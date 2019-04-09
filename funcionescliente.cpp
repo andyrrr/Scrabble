@@ -1,6 +1,9 @@
 #include "funcionescliente.h"
 #include "json.hpp"
 #include "Lista.h"
+#include <iostream>
+
+using namespace std;
 using json = nlohmann::json;
 
 FuncionesCliente::FuncionesCliente()

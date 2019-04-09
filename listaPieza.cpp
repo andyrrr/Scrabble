@@ -62,7 +62,7 @@ string ListaPieza::toString() {
     } else {
         NodoPieza *actual = this->getInicio();
         while(actual->getSig()!= nullptr){
-            string dire = "("+to_string(actual->getDato()->getFil())+" "+ to_string(actual->getDato()->getCol())+")";
+            string dire = "("+to_string(actual->getDato()->getY())+" "+ to_string(actual->getDato()->getX())+")";
             ListaFinal= dire+", ";
         }
     }
