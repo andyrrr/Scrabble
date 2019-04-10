@@ -82,6 +82,9 @@ void Conexion::establecerConexion(string infoenviar){
             cout<<buf<<endl;
             cout<<"aqui entra"<<endl;
             Empaquetar *recibido = desempaquetar(StringtoJson(string(buf)));
+            cout<<"CJ"<<recibido->getCrearJuego()<<endl;
+            cout<<"AJ"<<recibido->getActualizarJuego()<<endl;
+            cout<<"Ado"<<recibido->getActualizado()<<endl;
             if (recibido->getActualizado()){
                 cout<<"no entiendo"<<endl;
                 CambiosRecibidos=recibido->getListaCambios();
