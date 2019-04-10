@@ -22,7 +22,7 @@ Lista::Lista() {
  * en el Nodo.
  * @param valor
  */
-void Lista::addLetra(std::string dato,int fila,int colum) {
+void Lista::addLetra(std::string dato,int colum,int fila) {
     Nodo *temp = new Nodo;
     temp->letra = dato;
     temp->fil = fila;
@@ -41,7 +41,16 @@ void Lista::addLetra(std::string dato,int fila,int colum) {
     }
     size++;
 }
-
+Nodo *Lista::retornar(int i) const {
+    Nodo *temp;
+    temp = head;
+    int cont =0;
+    while (cont!=i) {
+        temp = temp->next;
+        cont++;
+    }
+    return temp;
+}
 /**
  * @brief Simple implementacion de una funcion que muestra los valores de cada nodo en la lista.
  */
@@ -61,7 +70,7 @@ void Lista::clear(){
         temp = temp->next;
 }
     head = NULL;
-    size =0;
+    size =1;
     delete temp;
 }
 /**

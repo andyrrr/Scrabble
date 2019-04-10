@@ -1,15 +1,18 @@
 #include "empaquetar.h"
-Empaquetar::Empaquetar(int IDJugador, int IDjuego, bool CrearJuego, bool ActualizarJuego, bool Actualizado, Lista *listaCambios) : IDJugador(
+
+Empaquetar::Empaquetar(int IDJugador, int IDjuego, bool CrearJuego, bool ActualizarJuego, bool Actualizado,
+                       Lista *listaCambios) : IDJugador(
         IDJugador), IDjuego(IDjuego), CrearJuego(CrearJuego), ActualizarJuego(ActualizarJuego), Actualizado(
         Actualizado), ListaCambios(listaCambios) {}
 
+Empaquetar::Empaquetar() {}
 
 int Empaquetar::getIDJugador() const {
     return IDJugador;
 }
 
 void Empaquetar::setIDJugador(int idjugador) {
-    IDJugador=idjugador;
+    IDJugador = idjugador;
 }
 
 int Empaquetar::getIDjuego() const {
@@ -17,7 +20,14 @@ int Empaquetar::getIDjuego() const {
 }
 
 void Empaquetar::setIDjuego(int idjuego) {
-    IDjuego=idjuego;
+    IDjuego = idjuego;
+}
+Lista *Empaquetar::getListaCambios() const {
+    return ListaCambios;
+}
+
+void Empaquetar::setListaCambios(Lista *listaCambios) {
+    ListaCambios = listaCambios;
 }
 
 bool Empaquetar::getCrearJuego() {
@@ -25,7 +35,7 @@ bool Empaquetar::getCrearJuego() {
 }
 
 void Empaquetar::setCrearJuego(bool crearJuego) {
-    CrearJuego=crearJuego;
+    CrearJuego = crearJuego;
 }
 
 bool Empaquetar::getActualizarJuego() {
@@ -33,7 +43,7 @@ bool Empaquetar::getActualizarJuego() {
 }
 
 void Empaquetar::setActualizarJuego(bool actualizarJuego) {
-    ActualizarJuego=actualizarJuego;
+    ActualizarJuego = actualizarJuego;
 }
 
 bool Empaquetar::getActualizado() {
@@ -41,8 +51,37 @@ bool Empaquetar::getActualizado() {
 }
 
 void Empaquetar::setActualizado(bool actualizado) {
-    Actualizado=actualizado;
+    Actualizado = actualizado;
 }
+
+void Empaquetar::setCambios(json cambio) {
+    Cambios = cambio;
+}
+
+json Empaquetar::getCambios() {
+    return Cambios;
+}
+
+int Empaquetar::getPuntaje() const {
+    return Puntaje;
+}
+
+void Empaquetar::setPuntaje(int puntaje) {
+    Puntaje = puntaje;
+}
+
+json Empaquetar::generarJsonEmpaquetado() {
+    json empa;
+
+    empa["IDPLAYER"] = getIDJugador();
+    empa["IDGAME"] = getIDjuego();
+    empa["CREATE"] = getCrearJuego();
+    empa["REFRESH"] = getActualizarJuego();
+    empa["REFRESHED"] = getActualizado();
+    empa["JSON"] = generarJson();
+    return empa;
+}
+
 json Empaquetar::generarJson() {
     json j1;
     Nodo *temp;
@@ -53,7 +92,7 @@ json Empaquetar::generarJson() {
     while (temp != NULL) {
         std::string s = std::to_string(i);
         j1[s] = {{"Letra", temp->letra},
-                 {"Posi",  {temp->fil, temp->col}}};
+                 {"Posi",  {temp->col, temp->fil}}};
         temp = temp->next;
         i++;
     }

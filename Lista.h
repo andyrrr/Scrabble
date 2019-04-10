@@ -25,6 +25,7 @@ public:
     void clear();
     void vernodos();
     Nodo *getHead() const;
+    Nodo *retornar(int indice) const;
 
     void setHead(Nodo *head);
 

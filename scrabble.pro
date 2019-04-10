@@ -27,10 +27,12 @@ CONFIG += c++11
 SOURCES += \
         Lista.cpp \
         Nodo.cpp \
+        conexion.cpp \
         dibujar.cpp \
         empaquetar.cpp \
         ficha.cpp \
         funcionescliente.cpp \
+        inicio.cpp \
         listaPieza.cpp \
         listaficha.cpp \
         main.cpp \
@@ -41,9 +43,11 @@ SOURCES += \
 HEADERS += \
         Lista.h \
         Nodo.h \
+        conexion.h \
         dibujar.h \
         empaquetar.h \
         ficha.h \
+        inicio.h \
         json.hpp \
         listaPieza.h \
         listaficha.h \
