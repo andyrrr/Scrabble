@@ -11,7 +11,6 @@
 #include "iostream"
 #include "stdio.h"
 #include "string"
-#include "Lista.h"
 
 class Dibujar;
 
@@ -20,6 +19,8 @@ class Tablero : public QWidget
     Q_OBJECT
 
 public:
+    void setIDJuego(int id);
+    int getIDJuego();
     Tablero(Dibujar *dibujar, QWidget *parent);
     void generarPiezas();
     void generarAdyacentes(int col, int fila);
@@ -29,10 +30,7 @@ public:
     void asignarFicha(int piezaCol, int piezaFil, int fichaCol, int fichaFil);
     bool verificarDireccion(int piezaCol, int piezaFila);
     void inicializar();
-    void actualizarMatriz();
-    void respaldar();
-    ListaFicha fichasNuevas;
-
+    void actualizar();
 protected:
     void paintEvent(QPaintEvent *event) override;
 

@@ -2,7 +2,7 @@
 #include "dibujar.h"
 #include "listaPieza.h"
 #include "empaquetar.h"
-
+#include <iomanip>
 #include <QPainter>
 #include <QPushButton>
 #include <sstream>
@@ -12,17 +12,31 @@
 #include <string>
 #include<time.h>
 #include "Lista.h"
-
+#include <fstream>
 #include <stdio.h>
-#include <arpa/inet.h>
+#include <iostream>
+#include <string.h> //strlen
+#include <stdlib.h>
+#include <errno.h>
+#include <unistd.h> //close
+#include <arpa/inet.h> //close
+#include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/time.h>
+#include <string>
 
-#include "conexion.h"
+
 
 using namespace std;
 Lista *ls = new Lista();
 
-
+void Tablero::setIDJuego(int i){
+   JuegoID = i;
+}
+int Tablero::getIDJuego(){
+    return JuegoID;
+}
 Tablero::Tablero(Dibujar *dibujar,QWidget *parent):QWidget(parent),dibujar(dibujar)
 {
     setFixedSize(1000,600);
@@ -31,8 +45,6 @@ Tablero::Tablero(Dibujar *dibujar,QWidget *parent):QWidget(parent),dibujar(dibuj
     generarPiezas();
     generarFichas();
     palabraFormada="";
-    JuegoID=0;
-    JugadorID=0;
 }
 
 
@@ -101,7 +113,6 @@ void Tablero::generarAdyacentes(int col, int fila){
     adyacentes.limpiar();
     int i=0;
     while(Matriz[col][fila+i]->getFree()==false){
-        cout<<("(%i,%i)",col,fila+i)<<" Ocupada"<<endl;
         i++;
     }
     if(fila+i<tam && col<tam && fila<tam && (dire==1 || dire==0)){
@@ -162,13 +173,14 @@ void Tablero::generarPiezas(){
 
 void Tablero::generarFichas(){
     srand(time(NULL));
-    char *letras[]={"A","B","C","D","E","F","G",
-                    "H","I","J","K","L","M","N",
-                    "O","P","Q","R","S","T","U",
+    char *letras[]={"A","A","A","A","A","A","A","A","A","A","A","A","B","B","C","C","C","C","D","D","D","D","D",
+                    "E","E","E","E","E","E","E","E","E","E","E","E","F","G","G","H","H","I","I","I","I","I","I",
+                    "J","K","L","L","L","L","M","M","N","N","N","N","N","Ñ","O","O","O","O","O","O","O","O",
+                    "P","P","Q","R","R","R","R","R","S","S","S","S","S","S","T","T","T","T","U","U","U","U","U",
                      "V","W","X","Y","Z"};
     for (int fila=0; fila<4;fila++){
         for (int col=0; col<4;col++){
-            char *letra=letras[rand()%26];
+            char *letra=letras[rand()%98];
             std::string s(letra);
             Ficha *p= new Ficha(col*60+700,fila*80+100,s);
             listaFichas[col][fila]=p;
@@ -202,13 +214,6 @@ void Tablero::paintEvent(QPaintEvent *event)
             QPen contorno= listaFichas[col][fila]->getContorno();
             dibujar->paint2(&painter,x,y,letra,contorno);
         }
-    }
-    for (int i=0;i<fichasNuevas.tamano();i++){
-        int x= fichasNuevas.retornar(i)->getDato()->getX();
-        int y= fichasNuevas.retornar(i)->getDato()->getY();
-        std::string letra= fichasNuevas.retornar(i)->getDato()->getLetra();
-        QPen contorno= fichasNuevas.retornar(i)->getDato()->getContorno();
-        dibujar->paint2(&painter,y,x,letra,contorno);
     }
 
     for (int q=0; q<adyacentes.tamano();q++){
@@ -291,7 +296,7 @@ void Tablero::mousePressEvent(QMouseEvent *event){
 void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaFila){
     fichaSelec->setContorno(QPen(Qt::black));
     /**
-      ls->addLetra(letra,piezaCol,piezaFila); lo que hace es agregar la letra en mi lista, obteniendoi los
+      ls->addLetra(letra,piezaFila,piezaCol); lo que hace es agregar la letra en mi lista, obteniendoi los
       valores de las posiciones, y aqui es donde me està dando el error.
       La primer letra, y por ende los primeros valores de Columna y Fila al parecer no tienen ningun dato
       entonces cuando se imprime el json, la primer letra no posee la posicion como las demàs.s
@@ -315,11 +320,9 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
                 int columna = piezaActCol;
                 int fila = piezaActFila+cont;
                 std::string letra = Matriz[columna][fila]->getFletra()->getLetra();
-                int col=Matriz[columna][fila]->getFletra()->getColM();
-                int fil=Matriz[columna][fila]->getFletra()->getFilM();
                 palabraFormada=palabraFormada+letra;
                 cont++;
-                ls->addLetra(letra,col,fil);
+                ls->addLetra(letra,piezaFila,piezaCol);
                 //cout<<"letraagregada"<<endl;
             }
         }
@@ -330,11 +333,9 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
                 int columna = piezaActCol;
                 int fila = piezaActFila-cont;
                 std::string letra = Matriz[columna][fila]->getFletra()->getLetra();
-                int col=Matriz[columna][fila]->getFletra()->getColM();
-                int fil=Matriz[columna][fila]->getFletra()->getFilM();
-                palabraFormada=palabraFormada+letra;
+                palabraFormada=palabraFormada+ letra;
                 cont++;
-                ls->addLetra(letra,col,fil);
+                ls->addLetra(letra,piezaFila,piezaCol);
                 //cout<<"letraagregada"<<endl;
             }
         }
@@ -346,11 +347,9 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
                 int columna = piezaActCol+cont;
                 int fila = piezaActFila;
                 std::string letra = Matriz[columna][fila]->getFletra()->getLetra();
-                int col=Matriz[columna][fila]->getFletra()->getColM();
-                int fil=Matriz[columna][fila]->getFletra()->getFilM();
                 palabraFormada=palabraFormada+letra;
                 cont++;
-                ls->addLetra(letra,col,fil);
+                ls->addLetra(letra,piezaFila,piezaCol);
                 //cout<<"letraagregada"<<endl;
             }
         }
@@ -362,11 +361,9 @@ void Tablero::asignarFicha(int piezaCol, int piezaFila, int fichaCol, int fichaF
                 int columna = piezaActCol-cont;
                 int fila = piezaActFila;
                 std::string letra = Matriz[columna][fila]->getFletra()->getLetra();
-                int col=Matriz[columna][fila]->getFletra()->getColM();
-                int fil=Matriz[columna][fila]->getFletra()->getFilM();
                 palabraFormada=palabraFormada+letra;
                 cont++;
-                ls->addLetra(letra,col,fil);
+                ls->addLetra(letra,piezaFila,piezaCol);
 
                 //cout<<"letraagregada"<<endl;
             }
@@ -390,35 +387,7 @@ bool Tablero::verificarDireccion(int piezaCol, int piezaFila){
     return  false;
 
 }
-void Tablero::actualizarMatriz(){
-    Lista *cambios= new Lista();
-    cambios->addLetra("Y",0,0);
-    Empaquetar *actualizar= new Empaquetar(0,0,false,true,false,cambios);
-    Conexion con(actualizar);
-    cout<<"Los cambios recibidos"<<endl;
-    con.CambiosRecibidos->vernodos();
-    for (int i=0;i<con.CambiosRecibidos->size;i++){
-        Nodo *temp=con.CambiosRecibidos->retornar(i);
-        if (Matriz[temp->col][temp->fil]->getFree()){
-            Ficha *ficha = new Ficha(0,0,temp->letra);
-            cout<<"ficha en "<<temp->fil<<temp->col<<"h"<<endl;
 
-            ficha->setColM(temp->col);
-            ficha->setFilM(temp->fil);
-            Matriz[temp->col][temp->fil]->setFletra(ficha);
-            cout<<Matriz[temp->col][temp->fil]->getFree()<<endl;
-            cout<<(1==1)<<endl;
-            fichasNuevas.agregar(ficha);
-        }
-        respaldar();
-
-
-
-    }
-    cout<<"formó fichas"<<endl;
-    repaint();
-
-}
 void Tablero::handleEnviar()
 {
     /*contCol++;
@@ -435,13 +404,11 @@ void Tablero::handleEnviar()
      * Aqui lo que hace es hacer un archivo Json a partir de la funcion en "funcionescliente",
      * el jsonGen.dump() imprime el Json en consola.
      */
-    Empaquetar *paquete=new Empaquetar(JugadorID, JuegoID, false, false, false, ls);
-    Conexion con(paquete);
-    respaldar();
-
-    cout<<"termina"<<endl;
-}
-void Tablero::respaldar(){
+    Empaquetar *paquete = new Empaquetar(JugadorID, JuegoID, false, true, false, ls);
+    json jsonGen = paquete->generarJsonEmpaquetado();
+    std::ofstream o("/home/dantroll/Scrabble/pretty.json");
+    o << std::setw(0) << jsonGen << std::endl;
+    //cout << jsonGen.dump(2)<<endl;
     cout<<palabraFormada<<endl;
     for (int fila=0;fila<tam;fila++){
         for (int col=0;col<tam;col++){
@@ -468,12 +435,14 @@ void Tablero::respaldar(){
     cout<<"respalda fichas"<<endl;
     adyacentes.limpiar();
     adyacentes2.limpiar();
-    cout<<"termina"<<endl;
+    const char* palabra="hola";
+
     inicializar();
+    ls->clear();
+
 }
 
 void Tablero::inicializar(){
-    cout<<"entra"<<endl;
     ponerPCol=-1;
     ponerPFil=-1;
     ponerFCol=-1;
@@ -490,8 +459,6 @@ void Tablero::inicializar(){
     palabraFormada="";
 
     repaint();
-    ls->clear();
-    cout<<"inic-----"<<endl;
 }
 void Tablero::handleEliminar()
 {
@@ -521,7 +488,7 @@ void Tablero::handleEliminar()
 }
 void Tablero::handlePasar()
 {
-    actualizarMatriz();
+    cout << getIDJuego()<<endl;
 }
 void Tablero::handleSalir()
 {
