@@ -26,7 +26,6 @@ Conexion::Conexion(Empaquetar* paquete)
     infoRecibir="";
     establecerConexion(infoEnviar);
 
-
 }
 
 
@@ -137,34 +136,5 @@ Lista* Conexion::generateList(json j1) {
     }
     return temp;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

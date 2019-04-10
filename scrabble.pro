@@ -28,14 +28,17 @@ SOURCES += \
         Lista.cpp \
         Nodo.cpp \
         conexion.cpp \
+        crear.cpp \
         dibujar.cpp \
         empaquetar.cpp \
         ficha.cpp \
         funcionescliente.cpp \
+        ingresar.cpp \
         inicio.cpp \
         listaPieza.cpp \
         listaficha.cpp \
         main.cpp \
+        mainwindow.cpp \
         pieza.cpp \
         scrabble.cpp \
         tablero.cpp
@@ -44,18 +47,24 @@ HEADERS += \
         Lista.h \
         Nodo.h \
         conexion.h \
+        crear.h \
         dibujar.h \
         empaquetar.h \
         ficha.h \
+        ingresar.h \
         inicio.h \
         json.hpp \
         listaPieza.h \
         listaficha.h \
+        mainwindow.h \
         pieza.h \
         scrabble.h \
         tablero.h
 
 FORMS += \
+        crear.ui \
+        ingresar.ui \
+        mainwindow.ui \
         scrabble.ui
 
 # Default rules for deployment.

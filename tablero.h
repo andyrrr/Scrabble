@@ -31,6 +31,8 @@ public:
     bool verificarDireccion(int piezaCol, int piezaFila);
     void inicializar();
     void actualizar();
+    void respaldar();
+    void actualizarMatriz();
 protected:
     void paintEvent(QPaintEvent *event) override;
 
@@ -71,6 +73,7 @@ private:
     int contfila=10;
     int contCol=-1;
     string palabraFormada;
+    ListaFicha fichasNuevas;
 
     int JugadorID;
     int JuegoID;
