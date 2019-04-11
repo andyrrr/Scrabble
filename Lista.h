@@ -20,7 +20,7 @@ public:
 
     Lista(); //constructor
 
-
+    void addLetra(std::string dato);
     void addLetra(std::string letra,int fila,int col);
     void clear();
     void vernodos();

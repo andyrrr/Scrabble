@@ -16,13 +16,14 @@ public:
     string getInfoRecibir();
     Lista * generateList(json j1);
     Lista * CambiosRecibidos;
+    Empaquetar *package;
 
 private:
     string infoEnviar;
     string infoRecibir;
     Empaquetar *desempaquetar(json j1);
     json StringtoJson(string s1);
-    Empaquetar *package;
+
 
 };
 

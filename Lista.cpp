@@ -15,6 +15,25 @@ Lista::Lista() {
     head = NULL;
     tail = NULL;
 }
+void Lista::addLetra(std::string dato) {
+    Nodo *temp = new Nodo;
+    temp->letra = dato;
+    temp->fil = 0;
+    temp->col = 0;
+    temp->next = NULL;
+
+    if (!head) { //
+        head = temp;
+        return;
+    } else { // find last and link the new node
+        Nodo *last = head;
+        while (last->next) last = last->next;
+        last->next = temp;
+        temp->fil = 0;
+        temp->col = 0;
+    }
+    size++;
+}
 
 
 /**

@@ -451,7 +451,11 @@ void Tablero::handleEnviar()
      */
     Empaquetar *paquete=new Empaquetar(JugadorID, JuegoID, false, false, false, ls);
     Conexion con(paquete);
-    respaldar();
+    if (con.package->getCrearJuego()){
+        respaldar();
+    }else{
+        handleEliminar();
+    }
 
     cout<<"termina"<<endl;
 }
