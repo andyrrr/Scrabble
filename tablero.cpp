@@ -406,8 +406,8 @@ bool Tablero::verificarDireccion(int piezaCol, int piezaFila){
 }
 void Tablero::actualizarMatriz(){
     Lista *cambios= new Lista();
-    cambios->addLetra("Y",0,0);
-    Empaquetar *actualizar= new Empaquetar(0,0,false,true,false,cambios);
+    cambios->addLetra("-",0,0);
+    Empaquetar *actualizar= new Empaquetar(0,JuegoID,false,true,false,cambios);
     Conexion con(actualizar);
     cout<<"Los cambios recibidos"<<endl;
     con.CambiosRecibidos->vernodos();
@@ -415,18 +415,16 @@ void Tablero::actualizarMatriz(){
         Nodo *temp=con.CambiosRecibidos->retornar(i);
         if (Matriz[temp->col][temp->fil]->getFree()){
             Ficha *ficha = new Ficha(0,0,temp->letra);
-            cout<<"ficha en "<<temp->fil<<temp->col<<"h"<<endl;
-
             ficha->setColM(temp->col);
             ficha->setFilM(temp->fil);
+
+            cout<<"ficha en "<<temp->fil<<temp->col<<"h"<<endl;
             Matriz[temp->col][temp->fil]->setFletra(ficha);
             cout<<Matriz[temp->col][temp->fil]->getFree()<<endl;
             cout<<(1==1)<<endl;
             fichasNuevas.agregar(ficha);
         }
         respaldar();
-
-
 
     }
     cout<<"formó fichas"<<endl;

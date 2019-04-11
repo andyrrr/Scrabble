@@ -32,7 +32,6 @@ SOURCES += \
         dibujar.cpp \
         empaquetar.cpp \
         ficha.cpp \
-        funcionescliente.cpp \
         ingresar.cpp \
         inicio.cpp \
         listaPieza.cpp \

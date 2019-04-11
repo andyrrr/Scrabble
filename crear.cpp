@@ -14,7 +14,7 @@ Crear::Crear(QWidget *parent) :
 }
 void Crear::crear_rnd(){
     srand (time(NULL));
-   int id = rand() %9999+1;
+   int id = rand() %(999999-100000)+100000+1;
    ui->label_2->setNum(id);
    this->JuegoID=id;
 

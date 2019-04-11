@@ -137,7 +137,7 @@ Lista* Conexion::generateList(json j1) {
         }else{
         for (int j = 1; j <= s; ++j) {
             std::string sq = std::to_string(j);
-            temp->addLetra(j1[sq]["Letra"]);
+            temp->addLetra(j1[sq]["Letra"], j1[sq]["Posi"][0], j1[sq]["Posi"][1]);
         }
             return temp;
         }

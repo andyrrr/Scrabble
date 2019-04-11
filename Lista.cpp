@@ -77,7 +77,7 @@ void Lista::vernodos() {
     Nodo *temp;
     temp = head;
     while (temp != NULL) {
-        std::cout <<temp->letra << " "<< std::endl;
+         std::cout <<temp->letra <<"("<<temp->col<<","<<temp->fil<<")"<< std::endl;
         temp = temp->next;
     }
 }
